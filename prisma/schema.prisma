@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model TrackModel {
+  id        String     @id @default(uuid())
+  title     String
+  link      String
+  author    String
+  playlists PlaylistModel[]
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  @@index([title])
+  @@map("tracks")
+}
+
+model PlaylistModel {
+  id        String   @id @default(uuid())
+  title     String
+  tracks    TrackModel[]
+  author    String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([title])
+  @@map("playlists")
+}
+
+model UserModel {
+  id String   @id @default(uuid())
+  email String
+  password String
+  name String
+
+  @@index([email])
+  @@map("users")
+}
+

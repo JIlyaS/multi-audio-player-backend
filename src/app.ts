@@ -12,6 +12,8 @@ import type { IConfigService } from './config/config.service.interface.js';
 import type { ITrackController } from './modules/tracks/tracks.controller.interface.js';
 import type { IExceptionFilter } from './errors/exceptionFilter.interface.js';
 import type { PrismaService } from './database/prisma.service.js';
+import type { UserController } from './modules/users/users.controller.js';
+import type { PlaylistController } from './modules/playlists/playlists.controller.js';
 // import { json } from 'body-parser';
 // import itemRoutes from './routes/itemRoutes';
 // import { errorHandler } from './middlewares/errorHandler';
@@ -26,10 +28,12 @@ export class App {
 	// private exceptionFilter!: ExceptionFilter;
 
 	constructor(
-		@inject(TYPES.ILogger) private logger: ILogger,
+		@inject(TYPES.Logger) private logger: ILogger,
 		@inject(TYPES.TrackController) private trackController: TrackController,
+		@inject(TYPES.UserController) private userController: UserController,
+		@inject(TYPES.PlaylistController) private playlistController: PlaylistController,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
-		@inject(TYPES.IConfigService) private configService: IConfigService,
+		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.PrismaService) private prismaService: PrismaService,
 	) {
 		this.app = express();
@@ -44,6 +48,8 @@ export class App {
 		// Routes
 		// app.use('/api/items', itemRoutes);
 		this.app.use('/tracks', this.trackController.router);
+		this.app.use('/auth', this.userController.router);
+		this.app.use('/playlists', this.playlistController.router);
 
 		// this.app.use('/api/v1', apiV1Router);
 	}

@@ -1,6 +1,6 @@
 import type { UserModel } from '../../generated/prisma/client.js';
-import type { UserLoginDto } from './dto/user-login.dto.js';
-import type { UserRegisterDto } from './dto/user-register.dto.js';
+import type { UserLoginDto } from './dto/login-user.dto.js';
+import type { UserRegisterDto } from './dto/register-user.dto.js';
 import type { UserEntity } from './user.entity.js';
 
 export interface IUserService {

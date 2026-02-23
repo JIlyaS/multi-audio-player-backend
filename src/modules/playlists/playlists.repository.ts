@@ -10,7 +10,11 @@ export class PlaylistRepository implements IPlaylistRepository {
 	constructor(@inject(TYPES.PrismaService) private prismaService: PrismaService) {}
 
 	async index(): Promise<PlaylistModel[]> {
-		return this.prismaService.client.playlistModel.findMany();
+		return this.prismaService.client.playlistModel.findMany({
+			include: {
+				tracks: true,
+			},
+		});
 	}
 
 	async create({ title, author, type, trackIds }: PlaylistEntity): Promise<PlaylistModel> {
@@ -31,7 +35,12 @@ export class PlaylistRepository implements IPlaylistRepository {
 	}
 
 	async get(id: string): Promise<PlaylistModel | null> {
-		return this.prismaService.client.playlistModel.findFirst({ where: { id } });
+		return this.prismaService.client.playlistModel.findFirst({
+			where: { id },
+			include: {
+				tracks: true,
+			},
+		});
 	}
 
 	async update(
@@ -46,7 +55,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 				author,
 				type,
 				tracks: {
-					connect: trackIdList,
+					set: trackIdList,
 				},
 			},
 			include: {

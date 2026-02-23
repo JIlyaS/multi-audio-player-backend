@@ -30,18 +30,29 @@ export class PlaylistController extends BaseController implements IPlaylistContr
 		this.bindRoutes([
 			// middlewares: [new ValidateMiddleware(dto)]
 			{ path: '/', method: 'get', func: this.getPlaylists },
+			{ path: '/:id', method: 'get', func: this.getPlaylist },
 			{ path: '/', method: 'post', func: this.createPlaylist },
-			{ path: '/', method: 'put', func: this.updatePlaylist },
+			{ path: '/', method: 'patch', func: this.updatePlaylist },
 			{ path: '/:id', method: 'delete', func: this.deletePlaylist },
 		]);
 	}
 
 	async getPlaylists(req: Request, res: Response): Promise<void> {
+		const result = await this.playlistService.index();
 		// Request<{}, {}, DTO>
 		// console.log('getTracks');
 		// const result = await this.trackService.index();
-		this.ok(res, []);
+		this.ok(res, result);
 		// next(new HTTPError(404, 'Ошибка', 'getTracks'));
+	}
+
+	async getPlaylist(req: Request, res: Response): Promise<void> {
+		// TODO: Написать логику не верного id
+       const id = req.params.id || "";
+
+	   const result = await this.playlistService.get(id);
+       
+	   this.ok(res, result);
 	}
 
 	async createPlaylist({ body }: Request<{}, {}, CreatePlaylistDto>, res: Response): Promise<void> {

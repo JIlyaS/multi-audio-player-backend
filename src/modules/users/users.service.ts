@@ -1,8 +1,8 @@
 import { inject, injectable } from 'inversify';
 import pkg from 'jsonwebtoken';
 
-import type { UserLoginDto } from './dto/user-login.dto.js';
-import type { UserRegisterDto } from './dto/user-register.dto.js';
+import type { UserLoginDto } from './dto/login-user.dto.js';
+import type { UserRegisterDto } from './dto/register-user.dto.js';
 import { UserEntity } from './user.entity.js';
 import type { IUserService } from './users.service.interface.js';
 import { TYPES } from '../../types/types.js';
@@ -13,7 +13,7 @@ import type { UserModel } from '../../generated/prisma/client.js';
 @injectable()
 export class UserService implements IUserService {
 	constructor(
-		@inject(TYPES.IConfigService) private configService: IConfigService,
+		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.UserRepository) private userRepository: IUserRepository,
 	) {}
 	async createUser({ email, name, password }: UserRegisterDto): Promise<UserModel | null> {

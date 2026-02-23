@@ -5,8 +5,8 @@ import type { IUserController } from './users.controller.interface.js';
 import type { ILogger } from '../../logger/logger.interface.js';
 import type { Request, Response, NextFunction } from 'express';
 import { HTTPError } from '../../errors/httpError.class.js';
-import { UserLoginDto } from './dto/user-login.dto.js';
-import { UserRegisterDto } from './dto/user-register.dto.js';
+import { UserLoginDto } from './dto/login-user.dto.js';
+import { UserRegisterDto } from './dto/register-user.dto.js';
 import { UserEntity } from './user.entity.js';
 import type { UserService } from './users.service.js';
 import { ValidateMiddleware } from '../../common/validate.middleware.js';
@@ -15,11 +15,11 @@ import type { ConfigService } from '../../config/config.service.js';
 @injectable()
 export class UserController extends BaseController implements IUserController {
 	constructor(
-		@inject(TYPES.ILogger) private loggerService: ILogger,
+		@inject(TYPES.Logger) private loggerService: ILogger,
 		@inject(TYPES.UserService) private userService: UserService,
-		@inject(TYPES.IConfigService) private configService: ConfigService,
+		@inject(TYPES.ConfigService) private configService: ConfigService,
 	) {
-		super(loggerService);
+		super(loggerService, 'users');
 		this.bindRoutes([
 			{
 				path: '/register',

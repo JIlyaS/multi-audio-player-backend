@@ -14,10 +14,10 @@ import { ValidateMiddleware } from '../../common/validate.middleware.js';
 @injectable()
 export class TrackController extends BaseController implements ITrackController {
 	constructor(
-		@inject(TYPES.ILogger) private readonly loggerService: ILogger,
-		@inject(TYPES.ITrackService) private readonly trackService: ITrackService,
+		@inject(TYPES.Logger) private readonly loggerService: ILogger,
+		@inject(TYPES.TrackService) private readonly trackService: ITrackService,
 	) {
-		super(loggerService);
+		super(loggerService, 'tracks');
 		this.bindRoutes([
 			// middlewares: [new ValidateMiddleware(dto)]
 			{ path: '/', method: 'get', func: this.getTracks },

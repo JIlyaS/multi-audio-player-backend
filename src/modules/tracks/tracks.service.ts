@@ -15,7 +15,7 @@ import type { ITrackRepository } from './tracks.repository.interface.js';
 @injectable()
 export class TrackService implements ITrackService {
 	constructor(
-		@inject(TYPES.IConfigService) private configService: IConfigService,
+		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.TrackRepository) private trackRepository: ITrackRepository,
 	) {}
 	async index(): Promise<TrackModel[]> {
@@ -24,6 +24,7 @@ export class TrackService implements ITrackService {
 		return await this.trackRepository.index();
 	}
 
+	// TODO: Нужна проверка на существующие значения или на крайний случай удаление всех значений из tracks таблицы и записи новыми значениями
 	async load(): Promise<void> {
 		try {
 			const filesPath = path.resolve('files');

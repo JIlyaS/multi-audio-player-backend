@@ -8,7 +8,7 @@ import type { IConfigService } from '../config/config.service.interface.js';
 export class PrismaService {
 	public readonly client!: PrismaClient;
 
-	constructor(@inject(TYPES.IConfigService) private configService: IConfigService) {
+	constructor(@inject(TYPES.ConfigService) private configService: IConfigService) {
 		const adapter = new PrismaPg({
 			connectionString: String(this.configService.get('DATABASE_URL')),
 		});

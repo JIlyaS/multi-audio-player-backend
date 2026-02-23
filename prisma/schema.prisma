@@ -18,6 +18,7 @@ model TrackModel {
   title     String
   link      String
   author    String
+  type      String?
   playlists PlaylistModel[]
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
@@ -31,6 +32,7 @@ model PlaylistModel {
   title     String
   tracks    TrackModel[]
   author    String
+  type      String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

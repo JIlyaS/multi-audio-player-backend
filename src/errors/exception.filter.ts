@@ -15,7 +15,7 @@ export class ExceptionFilter implements IExceptionFilter {
 	//   this.logger = logger;
 	// }
 
-	constructor(@inject(TYPES.ILogger) private readonly logger: ILogger) {}
+	constructor(@inject(TYPES.Logger) private readonly logger: ILogger) {}
 
 	catch(err: Error | HTTPError, req: Request, res: Response, next: NextFunction): void {
 		if (err instanceof HTTPError) {

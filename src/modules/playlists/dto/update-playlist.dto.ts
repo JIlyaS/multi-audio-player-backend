@@ -1,6 +1,8 @@
 import { IsArray, IsString } from 'class-validator';
 
-export class CreatePlaylistDto {
+export class UpdatePlaylistDto {
+	id!: string;
+
 	@IsString({ message: 'Не строка' })
 	title!: string;
 

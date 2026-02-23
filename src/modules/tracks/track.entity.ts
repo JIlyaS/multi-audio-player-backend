@@ -1,10 +1,14 @@
 export class TrackEntity {
+	private _type: string;
+
 	constructor(
 		private _title: string,
 		private _link: string,
 		private _author: string,
 		private _playlists?: string[],
-	) {}
+	) {
+		this._type = 'track';
+	}
 
 	get title(): string {
 		return this._title;
@@ -28,6 +32,10 @@ export class TrackEntity {
 
 	set author(author: string) {
 		this._author = author;
+	}
+
+	get type(): string {
+		return this._type;
 	}
 
 	get playlists(): string[] {

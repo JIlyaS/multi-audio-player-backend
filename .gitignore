@@ -61,11 +61,10 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 node_modules
 dist
 .clinic
+
+# Prisma
 /src/generated/prisma
-
-
-/src/generated/prisma
-
-/src/generated/prisma
-
 /generated/prisma
+
+# Серверная настройка экосистемы pm2
+ecosystem.config.js

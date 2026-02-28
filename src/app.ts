@@ -12,12 +12,14 @@ import type { IExceptionFilter } from './errors/exceptionFilter.interface.js';
 import type { PrismaService } from './database/prisma.service.js';
 import type { UserController } from './modules/users/users.controller.js';
 import type { PlaylistController } from './modules/playlists/playlists.controller.js';
+import { DEFAULT_HOST, DEFAULT_PORT } from './common/base.constants.js';
 
 @injectable()
 export class App {
 	private app!: Express;
 	private server!: Server;
 	private port!: number;
+	private host!: string;
 
 	constructor(
 		@inject(TYPES.Logger) private logger: ILogger,
@@ -29,7 +31,8 @@ export class App {
 		@inject(TYPES.PrismaService) private prismaService: PrismaService,
 	) {
 		this.app = express();
-		this.port = 8000;
+		this.port = Number(this.configService.get('PORT')) || DEFAULT_PORT;
+		this.host = String(this.configService.get('HOST')) || DEFAULT_HOST;
 	}
 
 	public useRoutes(): void {
@@ -59,7 +62,7 @@ export class App {
 		this.useExceptionFilters();
 		await this.prismaService.connect();
 		this.server = this.app.listen(this.port, () =>
-			this.logger.log(`Сервер запущен на http://localhost:${this.port}`),
+			this.logger.log(`Сервер запущен на http://${this.host}:${this.port}`),
 		);
 	}
 }

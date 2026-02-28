@@ -11,6 +11,11 @@ import type { ITrackService } from './tracks.service.interface.js';
 import type { IConfigService } from '../../config/config.service.interface.js';
 import { TYPES } from '../../types/types.js';
 import type { ITrackRepository } from './tracks.repository.interface.js';
+import {
+	DEFAULT_HOST,
+	DEFAULT_PORT,
+	DEFAULT_STATIC_DIRECTORY_PATH,
+} from '../../common/base.constants.js';
 
 @injectable()
 export class TrackService implements ITrackService {
@@ -19,14 +24,20 @@ export class TrackService implements ITrackService {
 		@inject(TYPES.TrackRepository) private trackRepository: ITrackRepository,
 	) {}
 	async index(): Promise<TrackModel[]> {
-		// const port = this.configService.get('PORT');
-		// console.log(port);
 		return await this.trackRepository.index();
 	}
 
-	// TODO: Нужна проверка на существующие значения или на крайний случай удаление всех значений из tracks таблицы и записи новыми значениями
 	async load(): Promise<void> {
 		try {
+			// TODO: В будущем нужна проверка на существующие значения, без возможности удаления всех записей
+			const { count } = await this.trackRepository.deleteMany();
+			console.log('count', count);
+
+			const port = Number(this.configService.get('PORT')) || DEFAULT_PORT;
+			const host = String(this.configService.get('HOST')) || DEFAULT_HOST;
+			const staticDirectoryPath =
+				String(this.configService.get('STATIC_DIRECTORY_PATH')) || DEFAULT_STATIC_DIRECTORY_PATH;
+
 			const filesPath = path.resolve('files');
 
 			const filePaths = await fsPromises.readdir(filesPath);
@@ -36,7 +47,13 @@ export class TrackService implements ITrackService {
 				// const fileMetadata = inspect(metadata, { showHidden: false, depth: null });
 				const title = metadata.common?.title || '';
 				const author = metadata.common?.artist || '';
-				const track = new TrackEntity(title, `localhost:8000/static/${filePath}`, author, []);
+				// TODO: Переделать под env переменную
+				const track = new TrackEntity(
+					title,
+					`${host}:${port}/${staticDirectoryPath}/${filePath}`,
+					author,
+					[],
+				);
 				await this.trackRepository.create(track);
 			}
 		} catch (err) {

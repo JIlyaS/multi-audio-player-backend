@@ -52,10 +52,7 @@ export class TracksRepository implements ITrackRepository {
 		});
 	}
 
-	// // experimental
-	// async deleteMany(id: string[]): Promise<{ id: string[] }> {
-	// 	return this.prismaService.client.track.deleteMany({
-	// 		where: { id },
-	// 	});
-	// }
+	async deleteMany(): Promise<{ count: number }> {
+		return this.prismaService.client.trackModel.deleteMany({});
+	}
 }

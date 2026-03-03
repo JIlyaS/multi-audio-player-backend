@@ -1,3 +1,4 @@
+import type { Request } from 'express';
 import { inject, injectable } from 'inversify';
 import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
@@ -27,11 +28,9 @@ export class TrackService implements ITrackService {
 		return await this.trackRepository.index();
 	}
 
-	async load(): Promise<void> {
+	async load(req: Request): Promise<void> {
 		try {
-			// TODO: В будущем нужна проверка на существующие значения, без возможности удаления всех записей
-			const { count } = await this.trackRepository.deleteMany();
-			console.log('count', count);
+			const tracks = await this.trackRepository.index();
 
 			const port = Number(this.configService.get('PORT')) || DEFAULT_PORT;
 			const host = String(this.configService.get('HOST')) || DEFAULT_HOST;
@@ -47,14 +46,17 @@ export class TrackService implements ITrackService {
 				// const fileMetadata = inspect(metadata, { showHidden: false, depth: null });
 				const title = metadata.common?.title || '';
 				const author = metadata.common?.artist || '';
-				// TODO: Переделать под env переменную
-				const track = new TrackEntity(
-					title,
-					`${host}:${port}/${staticDirectoryPath}/${filePath}`,
-					author,
-					[],
-				);
-				await this.trackRepository.create(track);
+				const isTrack = tracks.some((track) => track.title === title);
+
+				if (!isTrack) {
+					const track = new TrackEntity(
+						title,
+						`${req.protocol}://${host}:${port}/${staticDirectoryPath}/${filePath}`,
+						author,
+						[],
+					);
+					await this.trackRepository.create(track);
+				}
 			}
 		} catch (err) {
 			// TODO: Вывести корректную ошибку

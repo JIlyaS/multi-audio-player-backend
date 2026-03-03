@@ -37,7 +37,7 @@ export class TrackController extends BaseController implements ITrackController 
 
 	// TODO: Приватный запрос
 	async loadTracks(req: Request, res: Response): Promise<void> {
-		await this.trackService.load();
+		await this.trackService.load(req);
 		this.ok(res, 'Данные успешно загружены');
 	}
 

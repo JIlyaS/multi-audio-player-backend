@@ -15,6 +15,7 @@ import type { ITrackRepository } from './tracks.repository.interface.js';
 import {
 	DEFAULT_HOST,
 	DEFAULT_PORT,
+	DEFAULT_PROTOCOL,
 	DEFAULT_STATIC_DIRECTORY_PATH,
 } from '../../common/base.constants.js';
 
@@ -34,6 +35,10 @@ export class TrackService implements ITrackService {
 
 			const port = Number(this.configService.get('PORT')) || DEFAULT_PORT;
 			const host = String(this.configService.get('HOST')) || DEFAULT_HOST;
+			// TODO: Не верно, нужно чтобы открывалось по https:// протоколу из req.protocol
+			const protocol = String(this.configService.get('PROTOCOL')) || DEFAULT_PROTOCOL;
+			console.info('req.protocol', req.protocol);
+
 			const staticDirectoryPath =
 				String(this.configService.get('STATIC_DIRECTORY_PATH')) || DEFAULT_STATIC_DIRECTORY_PATH;
 
@@ -51,7 +56,7 @@ export class TrackService implements ITrackService {
 				if (!isTrack) {
 					const track = new TrackEntity(
 						title,
-						`${req.protocol}://${host}:${port}/${staticDirectoryPath}/${filePath}`,
+						`${protocol}://${host}:${port}/${staticDirectoryPath}/${filePath}`,
 						author,
 						[],
 					);

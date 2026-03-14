@@ -22,15 +22,7 @@ export class TracksRepository implements ITrackRepository {
 		});
 	}
 
-	// experimental
 	async createMany(tracks: TrackEntity[]): Promise<TrackModel[]> {
-		// const trackList = await this.prismaService.client.track.createMany({
-		// 	data: tracks,
-		// 	skipDuplicates: true,
-		// });
-
-		// return trackList;
-
 		return await this.prismaService.client.$transaction(
 			tracks.map((track) =>
 				this.prismaService.client.trackModel.create({
@@ -45,7 +37,12 @@ export class TracksRepository implements ITrackRepository {
 		);
 	}
 
-	// experimental
+	async get(id: string): Promise<TrackModel | null> {
+		return this.prismaService.client.trackModel.findFirst({
+			where: { id },
+		});
+	}
+
 	async delete(id: string): Promise<{ id: string }> {
 		return this.prismaService.client.trackModel.delete({
 			where: { id },

@@ -1,7 +1,5 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { BaseController } from '../../common/base.controller.js';
-// import type { LoggerService } from '../../logger/logger.service.js';
-// import { HTTPError } from '../../errors/httpError.class.js';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../types/types.js';
 import type { ILogger } from '../../logger/logger.interface.js';
@@ -10,6 +8,8 @@ import type { ITrackController } from './tracks.controller.interface.js';
 import { TrackEntity } from './track.entity.js';
 import type { ITrackService } from './tracks.service.interface.js';
 import { ValidateMiddleware } from '../../common/validate.middleware.js';
+import { AuthGuard } from '../../common/auth.guard.js';
+import { HTTPError } from '../../errors/httpError.class.js';
 
 @injectable()
 export class TrackController extends BaseController implements ITrackController {
@@ -22,29 +22,38 @@ export class TrackController extends BaseController implements ITrackController 
 			// middlewares: [new ValidateMiddleware(dto)]
 			{ path: '/', method: 'get', func: this.getTracks },
 			{ path: '/load', method: 'get', func: this.loadTracks },
-			// experimental
-			{ path: '/:id', method: 'delete', func: this.deleteTracks },
+			{ path: '/:id', method: 'delete', func: this.deleteTrack, middlewares: [new AuthGuard()] },
 		]);
 	}
 
 	async getTracks(req: Request, res: Response): Promise<void> {
-		// Request<{}, {}, DTO>
-		// console.log('getTracks');
 		const result = await this.trackService.index();
 		this.ok(res, result);
-		// next(new HTTPError(404, 'Ошибка', 'getTracks'));
 	}
 
-	// TODO: Приватный запрос
+	// TODO: Стоит ли делать запрос приватным?
 	async loadTracks(req: Request, res: Response): Promise<void> {
 		await this.trackService.load(req);
 		this.ok(res, 'Данные успешно загружены');
 	}
 
-	// experimental
-	// TODO: Приватный запрос
-	deleteTracks(req: Request, res: Response): void {
-		this.ok(res, 'deleteTracks');
+	// TODO: Трек удаляется из базы, но не удаляется из файлово системы, при запросе GET /load удалённый трек снова попадет в БД
+	async deleteTrack(req: Request, res: Response, next: NextFunction): Promise<void> {
+		const id = req.params.id;
+
+		if (!id) {
+			return next(new HTTPError(400, 'Не верный запрос'));
+		}
+
+		const result = await this.trackService.get(id);
+
+		if (!result) {
+			return next(new HTTPError(404, 'Такого трека не существует'));
+		}
+
+		const deletedTrack = await this.trackService.delete(id);
+
+		this.ok(res, { id: deletedTrack.id });
 	}
 }
 

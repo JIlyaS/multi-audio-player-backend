@@ -64,7 +64,6 @@ export class PlaylistRepository implements IPlaylistRepository {
 		});
 	}
 
-	// private
 	async delete(id: string): Promise<{ id: string }> {
 		return this.prismaService.client.playlistModel.delete({
 			where: { id },

@@ -3,8 +3,6 @@ import { inject, injectable } from 'inversify';
 import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
 import { parseFile } from 'music-metadata';
-import { inspect } from 'node:util';
-import { v4 as uuidv4 } from 'uuid';
 
 import type { TrackModel } from '../../generated/prisma/client.js';
 import { TrackEntity } from './track.entity.js';
@@ -67,6 +65,10 @@ export class TrackService implements ITrackService {
 			// TODO: Вывести корректную ошибку
 			console.error(err);
 		}
+	}
+
+	async get(id: string): Promise<TrackModel | null> {
+		return await this.trackRepository.get(id);
 	}
 
 	async delete(id: string): Promise<{ id: string }> {

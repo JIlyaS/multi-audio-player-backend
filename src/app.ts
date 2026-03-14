@@ -13,6 +13,7 @@ import type { PrismaService } from './database/prisma.service.js';
 import type { UserController } from './modules/users/users.controller.js';
 import type { PlaylistController } from './modules/playlists/playlists.controller.js';
 import { DEFAULT_HOST, DEFAULT_PORT } from './common/base.constants.js';
+import { AuthMiddleware } from './common/auth.middleware.js';
 
 @injectable()
 export class App {
@@ -50,6 +51,9 @@ export class App {
 		this.app.use('/static', express.static('files'));
 
 		this.app.use(cors());
+
+		const authMiddleware = new AuthMiddleware(String(this.configService.get('SECRET')));
+		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
 
 	private useExceptionFilters(): void {

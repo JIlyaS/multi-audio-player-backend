@@ -1,10 +1,13 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsString } from 'class-validator';
 
 export class UpdatePlaylistDto {
 	id!: string;
 
 	@IsString({ message: 'Не строка' })
 	title!: string;
+
+	@IsBoolean()
+	isPublic!: boolean;
 
 	@IsString({ message: 'Не строка' })
 	author!: string;

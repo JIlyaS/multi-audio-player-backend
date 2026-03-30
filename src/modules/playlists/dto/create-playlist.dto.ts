@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsString } from 'class-validator';
 
 export class CreatePlaylistDto {
 	@IsString({ message: 'Не строка' })
@@ -9,4 +9,10 @@ export class CreatePlaylistDto {
 
 	@IsArray()
 	trackIds!: string[];
+
+	@IsBoolean()
+	isPublic!: boolean;
+
+	@IsString()
+	userId!: string | null;
 }

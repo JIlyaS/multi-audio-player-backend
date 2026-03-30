@@ -23,13 +23,25 @@ export class PlaylistService implements IPlaylistService {
 		return await this.playlistRepository.get(id);
 	}
 
-	async create({ title, author, trackIds }: CreatePlaylistDto): Promise<PlaylistModel | null> {
-		const newPlaylist = new PlaylistEntity(title, author, trackIds);
+	async create({
+		title,
+		isPublic,
+		author,
+		trackIds,
+		userId,
+	}: CreatePlaylistDto): Promise<PlaylistModel | null> {
+		const newPlaylist = new PlaylistEntity(title, isPublic, author, trackIds, userId);
 		return await this.playlistRepository.create(newPlaylist);
 	}
 
-	async update({ id, title, author, trackIds }: UpdatePlaylistDto): Promise<PlaylistModel | null> {
-		const updatePlaylist = new PlaylistEntity(title, author, trackIds);
+	async update({
+		id,
+		title,
+		isPublic,
+		author,
+		trackIds,
+	}: UpdatePlaylistDto): Promise<PlaylistModel | null> {
+		const updatePlaylist = new PlaylistEntity(title, isPublic, author, trackIds);
 		return await this.playlistRepository.update(id, updatePlaylist);
 	}
 

@@ -16,7 +16,7 @@
 		"clean": "rimraf dist",
 		"ts": "tsc --noEmit && node --no-warnings=ExperimentalWarning --loader ts-node/esm",
 		"db:generate": "npx prisma generate dev",
-		"db:migrate": "npx prisma migrate dev --schema ./src/schema/schema.prisma --skip-generate --skip-seed"
+		"db:migrate": "npx prisma migrate dev --schema=./prisma/schema.prisma"
 	},
 	"repository": {
 		"type": "git",

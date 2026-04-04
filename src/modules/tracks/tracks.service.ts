@@ -31,11 +31,10 @@ export class TrackService implements ITrackService {
 		try {
 			const tracks = await this.trackRepository.index();
 
-			const port = Number(this.configService.get('PORT')) || DEFAULT_PORT;
-			const host = String(this.configService.get('HOST')) || DEFAULT_HOST;
+			const port = this.configService.get('PORT') || DEFAULT_PORT;
+			const host = this.configService.get('HOST') || DEFAULT_HOST;
 			// TODO: Не верно, нужно чтобы открывалось по https:// протоколу из req.protocol
-			const protocol = String(this.configService.get('PROTOCOL')) || DEFAULT_PROTOCOL;
-			console.info('req.protocol', req.protocol);
+			const protocol = this.configService.get('PROTOCOL') || DEFAULT_PROTOCOL;
 
 			const staticDirectoryPath =
 				String(this.configService.get('STATIC_DIRECTORY_PATH')) || DEFAULT_STATIC_DIRECTORY_PATH;

@@ -3,8 +3,6 @@ import { inject, injectable } from 'inversify';
 import * as fsPromises from 'node:fs/promises';
 import * as path from 'node:path';
 import { parseFile } from 'music-metadata';
-import { inspect } from 'node:util';
-import { v4 as uuidv4 } from 'uuid';
 
 import type { TrackModel } from '../../generated/prisma/client.js';
 import { TrackEntity } from './track.entity.js';
@@ -15,6 +13,7 @@ import type { ITrackRepository } from './tracks.repository.interface.js';
 import {
 	DEFAULT_HOST,
 	DEFAULT_PORT,
+	DEFAULT_PROTOCOL,
 	DEFAULT_STATIC_DIRECTORY_PATH,
 } from '../../common/base.constants.js';
 
@@ -32,8 +31,11 @@ export class TrackService implements ITrackService {
 		try {
 			const tracks = await this.trackRepository.index();
 
-			const port = Number(this.configService.get('PORT')) || DEFAULT_PORT;
-			const host = String(this.configService.get('HOST')) || DEFAULT_HOST;
+			const port = this.configService.get('PORT') || DEFAULT_PORT;
+			const host = this.configService.get('HOST') || DEFAULT_HOST;
+			// TODO: Не верно, нужно чтобы открывалось по https:// протоколу из req.protocol
+			const protocol = this.configService.get('PROTOCOL') || DEFAULT_PROTOCOL;
+
 			const staticDirectoryPath =
 				String(this.configService.get('STATIC_DIRECTORY_PATH')) || DEFAULT_STATIC_DIRECTORY_PATH;
 
@@ -51,7 +53,7 @@ export class TrackService implements ITrackService {
 				if (!isTrack) {
 					const track = new TrackEntity(
 						title,
-						`${req.protocol}://${host}:${port}/${staticDirectoryPath}/${filePath}`,
+						`${protocol}://${host}:${port}/${staticDirectoryPath}/${filePath}`,
 						author,
 						[],
 					);
@@ -62,6 +64,10 @@ export class TrackService implements ITrackService {
 			// TODO: Вывести корректную ошибку
 			console.error(err);
 		}
+	}
+
+	async get(id: string): Promise<TrackModel | null> {
+		return await this.trackRepository.get(id);
 	}
 
 	async delete(id: string): Promise<{ id: string }> {

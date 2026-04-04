@@ -2,8 +2,10 @@ export class PlaylistEntity {
 	private _type: string;
 	constructor(
 		private _title: string,
+		private _isPublic: boolean,
 		private _author?: string,
 		private _trackIds?: string[],
+		private _userId?: string | null,
 	) {
 		this._type = 'playlist';
 	}
@@ -14,6 +16,22 @@ export class PlaylistEntity {
 
 	set title(title: string) {
 		this._title = title;
+	}
+
+	set isPublic(isPublic: boolean) {
+		this._isPublic = isPublic;
+	}
+
+	get isPublic(): boolean {
+		return this._isPublic;
+	}
+
+	set userId(userId: string | null) {
+		this._userId = userId;
+	}
+
+	get userId(): string | null {
+		return this._userId || null;
 	}
 
 	get author(): string {

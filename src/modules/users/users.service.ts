@@ -35,13 +35,14 @@ export class UserService implements IUserService {
 		return newUser.comparePassword(password);
 	}
 
-	signJWT(email: string, secret: string): Promise<string> {
+	async signJWT(email: string, secret: string): Promise<string> {
+		// TODO: Реализовать Refresh Token
 		return new Promise<string>((resolve, reject) => {
 			const { sign } = pkg;
 			sign(
 				{
 					email,
-					iat: Math.floor(Date.now() / 1000),
+					iat: Math.floor(Date.now() / 1000), // Когда выпущена подпись
 				},
 				secret,
 				{
@@ -56,5 +57,9 @@ export class UserService implements IUserService {
 				},
 			);
 		});
+	}
+
+	async getUserInfo(email: string): Promise<UserModel | null> {
+		return this.userRepository.find(email);
 	}
 }

@@ -17,13 +17,22 @@ export class PlaylistRepository implements IPlaylistRepository {
 		});
 	}
 
-	async create({ title, author, type, trackIds }: PlaylistEntity): Promise<PlaylistModel> {
+	async create({
+		title,
+		author,
+		type,
+		isPublic,
+		userId,
+		trackIds,
+	}: PlaylistEntity): Promise<PlaylistModel> {
 		const trackIdList = trackIds.map((trackId) => ({ id: trackId }));
 		return this.prismaService.client.playlistModel.create({
 			data: {
 				title,
 				author,
 				type,
+				isPublic,
+				userId,
 				tracks: {
 					connect: trackIdList,
 				},
@@ -64,7 +73,6 @@ export class PlaylistRepository implements IPlaylistRepository {
 		});
 	}
 
-	// private
 	async delete(id: string): Promise<{ id: string }> {
 		return this.prismaService.client.playlistModel.delete({
 			where: { id },

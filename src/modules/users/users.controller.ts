@@ -11,6 +11,7 @@ import { UserEntity } from './user.entity.js';
 import type { UserService } from './users.service.js';
 import { ValidateMiddleware } from '../../common/validate.middleware.js';
 import type { ConfigService } from '../../config/config.service.js';
+import { AuthGuard } from '../../common/auth.guard.js';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -32,6 +33,12 @@ export class UserController extends BaseController implements IUserController {
 				method: 'post',
 				func: this.login,
 				middlewares: [new ValidateMiddleware(UserLoginDto)],
+			},
+			{
+				path: '/info',
+				method: 'get',
+				func: this.info,
+				middlewares: [new AuthGuard()],
 			},
 		]);
 	}
@@ -62,8 +69,18 @@ export class UserController extends BaseController implements IUserController {
 	): Promise<void> {
 		const result = await this.userService.createUser(body);
 		if (!result) {
-			return next(new HTTPError(422, 'Такой пользователь уже существует'));
+			return next(new HTTPError(422, 'Такой пользователь уже существует', 'register'));
 		}
 		this.ok(res, { email: result.email, id: result.id });
+	}
+
+	async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
+		const userInfo = await this.userService.getUserInfo(user);
+
+		if (!userInfo) {
+			return next(new HTTPError(404, 'Такого пользователя не существует', 'info'));
+		}
+
+		this.ok(res, { id: userInfo.id, email: userInfo.email, name: userInfo.name });
 	}
 }

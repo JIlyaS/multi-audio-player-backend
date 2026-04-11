@@ -55,7 +55,7 @@ export class TrackService implements ITrackService {
 						title,
 						host === 'localhost'
 							? `${protocol}://${host}:${port}/${staticDirectoryPath}/${filePath}`
-							: `${protocol}://backend.${host}/${staticDirectoryPath}/${filePath}`,
+							: `${protocol}://${host}/${staticDirectoryPath}/${filePath}`,
 						author,
 						[],
 					);

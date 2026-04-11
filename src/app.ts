@@ -48,9 +48,10 @@ export class App {
 	private useMiddleware(): void {
 		this.app.use(express.json());
 		this.app.use(express.urlencoded({ extended: true }));
-		this.app.use('/static', express.static('files'));
 
 		this.app.use(cors());
+
+		this.app.use('/static', express.static('files'));
 
 		const authMiddleware = new AuthMiddleware(String(this.configService.get('SECRET')));
 		this.app.use(authMiddleware.execute.bind(authMiddleware));

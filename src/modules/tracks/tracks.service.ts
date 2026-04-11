@@ -53,7 +53,9 @@ export class TrackService implements ITrackService {
 				if (!isTrack) {
 					const track = new TrackEntity(
 						title,
-						`${protocol}://${host}:${port}/${staticDirectoryPath}/${filePath}`,
+						host === 'localhost'
+							? `${protocol}://${host}:${port}/${staticDirectoryPath}/${filePath}`
+							: `${protocol}://backend.${host}/${staticDirectoryPath}/${filePath}`,
 						author,
 						[],
 					);

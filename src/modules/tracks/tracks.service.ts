@@ -16,6 +16,7 @@ import {
 	DEFAULT_PROTOCOL,
 	DEFAULT_STATIC_DIRECTORY_PATH,
 } from '../../common/base.constants.js';
+import { getFileName, getFileNameTrack } from './tracks.utils.js';
 
 @injectable()
 export class TrackService implements ITrackService {
@@ -43,11 +44,17 @@ export class TrackService implements ITrackService {
 
 			const filePaths = await fsPromises.readdir(filesPath);
 
-			for (const filePath of filePaths) {
+			// INFO: Валидация файлов в папке files - возможность добавлять только mp3 файлы
+			const validateFilePaths = filePaths.filter((filePath) => {
+				const index = filePath.lastIndexOf('.');
+				return filePath.slice(index + 1).includes('mp3');
+			});
+
+			for (const filePath of validateFilePaths) {
 				const metadata = await parseFile(path.resolve('files', filePath));
 				// const fileMetadata = inspect(metadata, { showHidden: false, depth: null });
-				const title = metadata.common?.title || '';
-				const author = metadata.common?.artist || '';
+				const title = metadata.common?.title || getFileName(filePath);
+				const author = metadata.common?.artist || 'Неизвестно';
 				const isTrack = tracks.some((track) => track.title === title);
 
 				if (!isTrack) {
@@ -62,6 +69,13 @@ export class TrackService implements ITrackService {
 					await this.trackRepository.create(track);
 				}
 			}
+
+			// INFO: Удаление треков из БД, если их нет в файловой системе
+			for (const track of tracks) {
+				if (!filePaths.includes(getFileNameTrack(track.link))) {
+					await this.trackRepository.delete(track.id);
+				}
+			}
 		} catch (err) {
 			// TODO: Вывести корректную ошибку
 			console.error(err);
@@ -73,6 +87,6 @@ export class TrackService implements ITrackService {
 	}
 
 	async delete(id: string): Promise<{ id: string }> {
-		return { id: '' };
+		return await this.trackRepository.delete(id);
 	}
 }

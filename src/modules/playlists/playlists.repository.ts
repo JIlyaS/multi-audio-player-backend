@@ -23,6 +23,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 		type,
 		isPublic,
 		userId,
+		tags,
 		trackIds,
 	}: PlaylistEntity): Promise<PlaylistModel> {
 		const trackIdList = trackIds.map((trackId) => ({ id: trackId }));
@@ -33,6 +34,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 				type,
 				isPublic,
 				userId,
+				tags,
 				tracks: {
 					connect: trackIdList,
 				},
@@ -54,7 +56,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 
 	async update(
 		id: string,
-		{ title, author, type, trackIds }: PlaylistEntity,
+		{ title, author, type, tags, trackIds }: PlaylistEntity,
 	): Promise<PlaylistModel> {
 		const trackIdList = trackIds.map((trackId) => ({ id: trackId }));
 		return this.prismaService.client.playlistModel.update({
@@ -63,6 +65,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 				title,
 				author,
 				type,
+				tags,
 				tracks: {
 					set: trackIdList,
 				},

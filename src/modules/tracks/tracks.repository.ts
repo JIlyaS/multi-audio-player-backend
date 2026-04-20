@@ -11,13 +11,14 @@ export class TracksRepository implements ITrackRepository {
 	async index(): Promise<TrackModel[]> {
 		return this.prismaService.client.trackModel.findMany();
 	}
-	async create({ title, link, author, type }: TrackEntity): Promise<TrackModel> {
+	async create({ title, link, author, type, tags }: TrackEntity): Promise<TrackModel> {
 		return this.prismaService.client.trackModel.create({
 			data: {
 				title,
 				link,
 				author,
 				type,
+				tags,
 			},
 		});
 	}
@@ -31,6 +32,7 @@ export class TracksRepository implements ITrackRepository {
 						link: track.link,
 						author: track.author,
 						type: track.type,
+						tags: track.tags,
 					},
 				}),
 			),

@@ -28,9 +28,10 @@ export class PlaylistService implements IPlaylistService {
 		isPublic,
 		author,
 		trackIds,
+		tags,
 		userId,
 	}: CreatePlaylistDto): Promise<PlaylistModel | null> {
-		const newPlaylist = new PlaylistEntity(title, isPublic, author, trackIds, userId);
+		const newPlaylist = new PlaylistEntity(title, isPublic, author, trackIds, tags, userId);
 		return await this.playlistRepository.create(newPlaylist);
 	}
 

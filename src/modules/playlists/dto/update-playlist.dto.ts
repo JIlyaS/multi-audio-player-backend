@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class UpdatePlaylistDto {
 	id!: string;
@@ -14,4 +14,9 @@ export class UpdatePlaylistDto {
 
 	@IsArray()
 	trackIds!: string[];
+
+	@IsOptional()
+	@IsArray()
+	@IsString({ each: true, message: 'Каждый тег должен быть строкой' })
+	tags?: string[];
 }

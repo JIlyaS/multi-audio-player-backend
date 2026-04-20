@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class CreatePlaylistDto {
 	@IsString({ message: 'Не строка' })
@@ -12,6 +12,11 @@ export class CreatePlaylistDto {
 
 	@IsBoolean()
 	isPublic!: boolean;
+
+	@IsOptional()
+	@IsArray()
+	@IsString({ each: true, message: 'Каждый тег должен быть строкой' })
+	tags?: string[];
 
 	@IsString()
 	userId!: string | null;

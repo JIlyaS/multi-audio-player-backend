@@ -5,6 +5,7 @@ export class TrackEntity {
 		private _title: string,
 		private _link: string,
 		private _author: string,
+		private _tags: string[] = [],
 		private _playlists?: string[],
 	) {
 		this._type = 'track';
@@ -32,6 +33,14 @@ export class TrackEntity {
 
 	set author(author: string) {
 		this._author = author;
+	}
+
+	get tags(): string[] {
+		return this._tags;
+	}
+
+	set tags(tags: string[]) {
+		this._tags = tags;
 	}
 
 	get type(): string {

@@ -22,7 +22,7 @@ export class TrackController extends BaseController implements ITrackController 
 			// middlewares: [new ValidateMiddleware(dto)]
 			{ path: '/', method: 'get', func: this.getTracks },
 			{ path: '/load', method: 'get', func: this.loadTracks },
-			{ path: '/:id', method: 'delete', func: this.deleteTrack, middlewares: [new AuthGuard()] },
+			{ path: '/:id', method: 'delete', func: this.deleteTrack }, //  middlewares: [new AuthGuard()]
 		]);
 	}
 

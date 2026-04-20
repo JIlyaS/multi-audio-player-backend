@@ -15,6 +15,7 @@ model TrackModel {
   createdAt DateTime        @default(now()) @map("created_at")
   updatedAt DateTime        @updatedAt @map("updated_at")
   type      String?
+  tags      String[]        @default([]) 
   playlists PlaylistModel[] @relation("PlaylistModelToTrackModel")
 
   @@index([title])
@@ -30,6 +31,7 @@ model PlaylistModel {
   type      String?
   isPublic  Boolean?
   userId    String?
+  tags      String[]     @default([])
   tracks    TrackModel[] @relation("PlaylistModelToTrackModel")
 
   @@index([title])

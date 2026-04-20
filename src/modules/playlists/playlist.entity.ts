@@ -5,6 +5,7 @@ export class PlaylistEntity {
 		private _isPublic: boolean,
 		private _author?: string,
 		private _trackIds?: string[],
+		private _tags?: string[],
 		private _userId?: string | null,
 	) {
 		this._type = 'playlist';
@@ -52,5 +53,13 @@ export class PlaylistEntity {
 
 	set playlists(playlists: string[]) {
 		this._trackIds = playlists;
+	}
+
+	get tags(): string[] {
+		return this._tags || [];
+	}
+
+	set tags(tags: string[]) {
+		this._tags = tags;
 	}
 }

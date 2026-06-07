@@ -1,0 +1,58 @@
+# Папки
+## Получить список папок
+GET http://localhost:8000/api/v1/folders HTTP/1.1
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzJiM2NiYmIwNjhiMmYwY2U5NWYwNTAiLCJpYXQiOjE3MzEyMzE1NTksImV4cCI6MTczMTQwNDM1OX0.ggaJDixflYV3PK-Bu9d2xzA-vdEmbn1LVqVyyG-YlII
+
+###
+
+## Получить список глобальных папок (Избранное)
+GET http://localhost:8000/api/v1/folders?global=true HTTP/1.1
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzJiM2NiYmIwNjhiMmYwY2U5NWYwNTAiLCJpYXQiOjE3MzEyMzE1NTksImV4cCI6MTczMTQwNDM1OX0.ggaJDixflYV3PK-Bu9d2xzA-vdEmbn1LVqVyyG-YlII
+
+###
+
+## Добавить новую папку
+POST http://localhost:8000/api/v1/folders HTTP/1.1
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzJiM2NiYmIwNjhiMmYwY2U5NWYwNTAiLCJpYXQiOjE3MzEyNDA3NzIsImV4cCI6MTczMTQxMzU3Mn0.cZ3FP1hyx7x3ggYtAIHyl5FcCmgQeH9WDP9GPjG0dCo
+
+{
+	"title": "Новая папка",
+	"name": "new_folder",
+	"isPublic": true,
+	"isGlobal": false,
+	"userId": null
+}
+
+###
+
+## Детальный просмотр данных о папке
+GET http://localhost:8000/api/v1/folders/a493e2c2-c0a5-4059-a602-663916a47bc6 HTTP/1.1
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzJiM2NiYmIwNjhiMmYwY2U5NWYwNTAiLCJpYXQiOjE3MzEyNDA3NzIsImV4cCI6MTczMTQxMzU3Mn0.cZ3FP1hyx7x3ggYtAIHyl5FcCmgQeH9WDP9GPjG0dCo
+
+###
+
+## Редактирование папки
+PATCH http://localhost:8000/api/v1/folders HTTP/1.1
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzI4NzljNmFmY2JmYWY4YjdjNDEzYWIiLCJpYXQiOjE3MzA3OTg2MTAsImV4cCI6MTczMDk3MTQxMH0.ovcfrRHJMTt1np5lff3G5TziAGkzrp0BIZaH2_Jtbug
+
+{
+  "id": "a493e2c2-c0a5-4059-a602-663916a47bc6",
+  "title": "Новая папка 1",
+  "name": "new_folder_1",
+  "isPublic": true,
+  "isGlobal": false
+}
+
+###
+
+## Удаление папки
+DELETE http://localhost:8000/api/v1/folders/a493e2c2-c0a5-4059-a602-663916a47bc6 HTTP/1.1
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzI4NzljNmFmY2JmYWY4YjdjNDEzYWIiLCJpYXQiOjE3MzA3OTg2MTAsImV4cCI6MTczMDk3MTQxMH0.ovcfrRHJMTt1np5lff3G5TziAGkzrp0BIZaH2_Jtbug
+
+###

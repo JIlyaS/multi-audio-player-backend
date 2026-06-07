@@ -5,6 +5,7 @@ export interface ITrackRepository {
 	index: () => Promise<TrackModel[]>;
 	get: (id: string) => Promise<TrackModel | null>;
 	create: (track: TrackEntity) => Promise<TrackModel>;
+	update: (id: string, track: { folderId: string | null }) => Promise<TrackModel>;
 	delete: (id: string) => Promise<{ id: string }>;
 	deleteMany: () => Promise<{ count: number }>;
 }

@@ -6,6 +6,7 @@ export class TrackEntity {
 		private _link: string,
 		private _author: string,
 		private _tags: string[] = [],
+		private _folderId?: string | null,
 		private _playlists?: string[],
 	) {
 		this._type = 'track';
@@ -47,11 +48,19 @@ export class TrackEntity {
 		return this._type;
 	}
 
-	get playlists(): string[] {
-		return this._playlists || [];
+	set folderId(folderId: string | null) {
+		this._folderId = folderId;
+	}
+
+	get folderId(): string | null {
+		return this._folderId || null;
 	}
 
 	set playlists(playlists: string[]) {
 		this._playlists = playlists;
+	}
+
+	get playlists(): string[] {
+		return this._playlists || [];
 	}
 }

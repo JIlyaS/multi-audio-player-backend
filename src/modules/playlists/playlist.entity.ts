@@ -3,6 +3,7 @@ export class PlaylistEntity {
 	constructor(
 		private _title: string,
 		private _isPublic: boolean,
+		private _folderId?: string | null,
 		private _author?: string,
 		private _trackIds?: string[],
 		private _tags?: string[],
@@ -47,12 +48,20 @@ export class PlaylistEntity {
 		return this._trackIds || [];
 	}
 
+	set trackIds(playlists: string[]) {
+		this._trackIds = playlists;
+	}
+
 	get type(): string {
 		return this._type;
 	}
 
-	set playlists(playlists: string[]) {
-		this._trackIds = playlists;
+	set folderId(folderId: string) {
+		this._folderId = folderId;
+	}
+
+	get folderId(): string | null {
+		return this._folderId || null;
 	}
 
 	get tags(): string[] {

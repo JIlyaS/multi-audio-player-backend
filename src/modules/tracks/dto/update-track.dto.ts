@@ -1,19 +1,15 @@
 import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
 
-export class UpdatePlaylistDto {
+export class UpdateTrackDto {
 	id!: string;
 
+	@IsOptional()
 	@IsString({ message: 'Не строка' })
-	title!: string;
+	title?: string;
 
-	@IsBoolean()
-	isPublic!: boolean;
-
+	@IsOptional()
 	@IsString({ message: 'Не строка' })
-	author!: string;
-
-	@IsArray()
-	trackIds!: string[];
+	author?: string;
 
 	@IsOptional()
 	@IsString({ message: 'Не строка' })

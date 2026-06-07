@@ -19,19 +19,28 @@ export class PlaylistService implements IPlaylistService {
 		return await this.playlistRepository.index();
 	}
 
-	async get(id: string): Promise<PlaylistModel | null> {
+	async get(id: string): Promise<Omit<PlaylistModel, 'folderId'> | null> {
 		return await this.playlistRepository.get(id);
 	}
 
 	async create({
 		title,
 		isPublic,
+		folderId,
 		author,
 		trackIds,
 		tags,
 		userId,
 	}: CreatePlaylistDto): Promise<PlaylistModel | null> {
-		const newPlaylist = new PlaylistEntity(title, isPublic, author, trackIds, tags, userId);
+		const newPlaylist = new PlaylistEntity(
+			title,
+			isPublic,
+			folderId,
+			author,
+			trackIds,
+			tags,
+			userId,
+		);
 		return await this.playlistRepository.create(newPlaylist);
 	}
 
@@ -41,8 +50,9 @@ export class PlaylistService implements IPlaylistService {
 		isPublic,
 		author,
 		trackIds,
+		folderId,
 	}: UpdatePlaylistDto): Promise<PlaylistModel | null> {
-		const updatePlaylist = new PlaylistEntity(title, isPublic, author, trackIds);
+		const updatePlaylist = new PlaylistEntity(title, isPublic, folderId, author, trackIds);
 		return await this.playlistRepository.update(id, updatePlaylist);
 	}
 

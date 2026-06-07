@@ -6,7 +6,7 @@ import type { PlaylistEntity } from './playlist.entity.js';
 export interface IPlaylistService {
 	index: () => Promise<PlaylistModel[]>;
 	create: (dto: CreatePlaylistDto) => Promise<PlaylistModel | null>;
-	get: (id: string) => Promise<PlaylistModel | null>;
+	get: (id: string) => Promise<Omit<PlaylistModel, 'folderId'> | null>;
 	update: (dto: UpdatePlaylistDto) => Promise<PlaylistModel | null>;
 	delete: (id: string) => Promise<{ id: string }>;
 }

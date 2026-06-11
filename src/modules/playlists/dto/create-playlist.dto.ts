@@ -14,6 +14,10 @@ export class CreatePlaylistDto {
 	isPublic!: boolean;
 
 	@IsOptional()
+	@IsString({ message: 'Не строка' })
+	folderId?: string;
+
+	@IsOptional()
 	@IsArray()
 	@IsString({ each: true, message: 'Каждый тег должен быть строкой' })
 	tags?: string[];

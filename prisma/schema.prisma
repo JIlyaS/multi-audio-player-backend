@@ -15,8 +15,11 @@ model TrackModel {
   createdAt DateTime        @default(now()) @map("created_at")
   updatedAt DateTime        @updatedAt @map("updated_at")
   type      String?
-  tags      String[]        @default([]) 
+  tags      String[]        @default([])
   playlists PlaylistModel[] @relation("PlaylistModelToTrackModel")
+
+  folder   FolderModel? @relation(fields: [folderId], references: [id])
+  folderId String?
 
   @@index([title])
   @@map("tracks")
@@ -34,8 +37,26 @@ model PlaylistModel {
   tags      String[]     @default([])
   tracks    TrackModel[] @relation("PlaylistModelToTrackModel")
 
+  folder   FolderModel? @relation(fields: [folderId], references: [id])
+  folderId String?
+
   @@index([title])
   @@map("playlists")
+}
+
+model FolderModel {
+  id        String   @id @default(uuid())
+  name      String
+  title     String
+  isPublic  Boolean
+  isGlobal  Boolean
+  userId    String?
+
+  tracks    TrackModel[]
+  playlists PlaylistModel[]
+
+  @@index([name])
+  @@map("folders")
 }
 
 model UserModel {

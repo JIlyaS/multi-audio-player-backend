@@ -10,6 +10,10 @@ import type { ITrackService } from './tracks.service.interface.js';
 import { ValidateMiddleware } from '../../common/validate.middleware.js';
 import { AuthGuard } from '../../common/auth.guard.js';
 import { HTTPError } from '../../errors/httpError.class.js';
+import type { UpdateTrackDto } from './dto/update-track.dto.js';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type RequestBody<T> = Request<{}, {}, T>;
 
 @injectable()
 export class TrackController extends BaseController implements ITrackController {
@@ -22,6 +26,9 @@ export class TrackController extends BaseController implements ITrackController 
 			// middlewares: [new ValidateMiddleware(dto)]
 			{ path: '/', method: 'get', func: this.getTracks },
 			{ path: '/load', method: 'get', func: this.loadTracks },
+			{ path: '/', method: 'patch', func: this.updateTrack },
+			// TODO: experimental
+			{ path: '', method: 'patch', func: this.updateFolderForTracks },
 			{ path: '/:id', method: 'delete', func: this.deleteTrack }, //  middlewares: [new AuthGuard()]
 		]);
 	}
@@ -36,6 +43,17 @@ export class TrackController extends BaseController implements ITrackController 
 		await this.trackService.load(req);
 		this.ok(res, 'Данные успешно загружены');
 	}
+
+	async updateTrack(req: RequestBody<UpdateTrackDto>, res: Response): Promise<void> {
+		// TODO: Нужно проверять корректный ли формат ответа
+		const body = req.body;
+		const result = await this.trackService.update(body);
+
+		this.ok(res, result);
+	}
+
+	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+	async updateFolderForTracks() {}
 
 	// TODO: Трек удаляется из базы, но не удаляется из файлово системы, при запросе GET /load удалённый трек снова попадет в БД
 	async deleteTrack(req: Request, res: Response, next: NextFunction): Promise<void> {

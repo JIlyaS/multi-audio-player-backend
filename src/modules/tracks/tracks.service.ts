@@ -17,6 +17,7 @@ import {
 	DEFAULT_STATIC_DIRECTORY_PATH,
 } from '../../common/base.constants.js';
 import { getFileName, getFileNameTrack } from './tracks.utils.js';
+import type { UpdateTrackDto } from './dto/update-track.dto.js';
 
 @injectable()
 export class TrackService implements ITrackService {
@@ -84,6 +85,12 @@ export class TrackService implements ITrackService {
 
 	async get(id: string): Promise<TrackModel | null> {
 		return await this.trackRepository.get(id);
+	}
+
+	// TODO: Доработать обновление треков по всем параметрам + сделать все параметры по умолчанию
+	async update({ id, title, author, tags, folderId }: UpdateTrackDto): Promise<TrackModel | null> {
+		// const updateTrack = new TrackEntity(title, '', author, tags, folderId);
+		return await this.trackRepository.update(id, { folderId: folderId || null });
 	}
 
 	async delete(id: string): Promise<{ id: string }> {

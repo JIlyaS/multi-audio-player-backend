@@ -14,6 +14,7 @@ import type { UserController } from './modules/users/users.controller.js';
 import type { PlaylistController } from './modules/playlists/playlists.controller.js';
 import { DEFAULT_HOST, DEFAULT_PORT } from './common/base.constants.js';
 import { AuthMiddleware } from './common/auth.middleware.js';
+import type { FolderController } from './modules/folders/folders.controller.js';
 
 @injectable()
 export class App {
@@ -27,6 +28,7 @@ export class App {
 		@inject(TYPES.TrackController) private trackController: TrackController,
 		@inject(TYPES.UserController) private userController: UserController,
 		@inject(TYPES.PlaylistController) private playlistController: PlaylistController,
+		@inject(TYPES.FolderController) private folderController: FolderController,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.PrismaService) private prismaService: PrismaService,
@@ -41,6 +43,7 @@ export class App {
 		apiV1Router.use('/tracks', this.trackController.router);
 		apiV1Router.use('/auth', this.userController.router);
 		apiV1Router.use('/playlists', this.playlistController.router);
+		apiV1Router.use('/folders', this.folderController.router);
 
 		this.app.use('/api/v1', apiV1Router);
 	}

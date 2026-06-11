@@ -25,6 +25,12 @@ import type { IPlaylistService } from './modules/playlists/playlists.service.int
 import { PlaylistService } from './modules/playlists/playlists.service.js';
 import type { IPlaylistRepository } from './modules/playlists/playlists.repository.interface.js';
 import { PlaylistRepository } from './modules/playlists/playlists.repository.js';
+import type { IFolderController } from './modules/folders/folders.controller.interface.js';
+import type { IFolderService } from './modules/folders/folders.service.interface.js';
+import type { IFolderRepository } from './modules/folders/folders.repository.interface.js';
+import { FolderController } from './modules/folders/folders.controller.js';
+import { FolderService } from './modules/folders/folders.service.js';
+import { FolderRepository } from './modules/folders/folders.repository.js';
 
 export const appBindings = new ContainerModule((container) => {
 	container.bind<ILogger>(TYPES.Logger).to(LoggerService).inSingletonScope();
@@ -33,6 +39,9 @@ export const appBindings = new ContainerModule((container) => {
 	container.bind<IPlaylistController>(TYPES.PlaylistController).to(PlaylistController);
 	container.bind<IPlaylistService>(TYPES.PlaylistService).to(PlaylistService);
 	container.bind<IPlaylistRepository>(TYPES.PlaylistRepository).to(PlaylistRepository);
+	container.bind<IFolderController>(TYPES.FolderController).to(FolderController);
+	container.bind<IFolderService>(TYPES.FolderService).to(FolderService);
+	container.bind<IFolderRepository>(TYPES.FolderRepository).to(FolderRepository);
 	container.bind<ITrackService>(TYPES.TrackService).to(TrackService);
 	container.bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
 	container.bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();

@@ -20,7 +20,7 @@ export class UserController extends BaseController implements IUserController {
 		@inject(TYPES.UserService) private userService: UserService,
 		@inject(TYPES.ConfigService) private configService: ConfigService,
 	) {
-		super(loggerService, 'users');
+		super(loggerService, 'auth');
 		this.bindRoutes([
 			{
 				path: '/register',

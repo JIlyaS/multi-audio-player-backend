@@ -13,6 +13,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 		return this.prismaService.client.playlistModel.findMany({
 			include: {
 				tracks: true,
+				folder: true,
 			},
 		});
 	}
@@ -23,6 +24,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 		type,
 		isPublic,
 		userId,
+		folderId,
 		tags,
 		trackIds,
 	}: PlaylistEntity): Promise<PlaylistModel> {
@@ -34,6 +36,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 				type,
 				isPublic,
 				userId,
+				folderId,
 				tags,
 				tracks: {
 					connect: trackIdList,
@@ -41,22 +44,31 @@ export class PlaylistRepository implements IPlaylistRepository {
 			},
 			include: {
 				tracks: true,
+				folder: true,
 			},
 		});
 	}
 
-	async get(id: string): Promise<PlaylistModel | null> {
+	async get(id: string): Promise<Omit<PlaylistModel, 'folderId'> | null> {
 		return this.prismaService.client.playlistModel.findFirst({
 			where: { id },
 			include: {
 				tracks: true,
+				folder: {
+					omit: {
+						userId: true,
+					},
+				},
+			},
+			omit: {
+				folderId: true,
 			},
 		});
 	}
 
 	async update(
 		id: string,
-		{ title, author, type, tags, trackIds }: PlaylistEntity,
+		{ title, author, type, folderId, tags, trackIds }: PlaylistEntity,
 	): Promise<PlaylistModel> {
 		const trackIdList = trackIds.map((trackId) => ({ id: trackId }));
 		return this.prismaService.client.playlistModel.update({
@@ -65,6 +77,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 				title,
 				author,
 				type,
+				folderId,
 				tags,
 				tracks: {
 					set: trackIdList,
@@ -72,6 +85,7 @@ export class PlaylistRepository implements IPlaylistRepository {
 			},
 			include: {
 				tracks: true,
+				folder: true,
 			},
 		});
 	}

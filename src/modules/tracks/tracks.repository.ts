@@ -9,9 +9,13 @@ import type { TrackEntity } from './track.entity.js';
 export class TracksRepository implements ITrackRepository {
 	constructor(@inject(TYPES.PrismaService) private prismaService: PrismaService) {}
 	async index(): Promise<TrackModel[]> {
-		return this.prismaService.client.trackModel.findMany();
+		return this.prismaService.client.trackModel.findMany({
+			include: {
+				folder: true,
+			},
+		});
 	}
-	async create({ title, link, author, type, tags }: TrackEntity): Promise<TrackModel> {
+	async create({ title, link, author, type, tags, folderId }: TrackEntity): Promise<TrackModel> {
 		return this.prismaService.client.trackModel.create({
 			data: {
 				title,
@@ -19,6 +23,19 @@ export class TracksRepository implements ITrackRepository {
 				author,
 				type,
 				tags,
+				folderId,
+			},
+		});
+	}
+
+	async update(id: string, { folderId }: { folderId: string | null }): Promise<TrackModel> {
+		return this.prismaService.client.trackModel.update({
+			where: { id },
+			data: {
+				// title,
+				// author,
+				folderId,
+				// tags,
 			},
 		});
 	}
@@ -33,6 +50,7 @@ export class TracksRepository implements ITrackRepository {
 						author: track.author,
 						type: track.type,
 						tags: track.tags,
+						folderId: track.folderId,
 					},
 				}),
 			),

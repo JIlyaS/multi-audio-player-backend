@@ -19,7 +19,9 @@ export class PlaylistService implements IPlaylistService {
 		return await this.playlistRepository.index();
 	}
 
-	async get(id: string): Promise<Omit<PlaylistModel, 'folderId'> | null> {
+	async get(
+		id: string,
+	): Promise<Omit<PlaylistModel & { tracks: TrackModel[] }, 'folderId'> | null> {
 		return await this.playlistRepository.get(id);
 	}
 

@@ -5,6 +5,8 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../../types/types.js';
 import type { ILogger } from '../../logger/logger.interface.js';
 import 'reflect-metadata';
+import path from 'node:path';
+import fluentFfmpeg from 'fluent-ffmpeg';
 import { ValidateMiddleware } from '../../common/validate.middleware.js';
 import type { IPlaylistController } from './playlists.controller.interface.js';
 import type { CreatePlaylistDto } from './dto/create-playlist.dto.js';
@@ -25,6 +27,7 @@ export class PlaylistController extends BaseController implements IPlaylistContr
 		this.bindRoutes([
 			// middlewares: [new ValidateMiddleware(dto)]
 			{ path: '/', method: 'get', func: this.getPlaylists },
+			{ path: '/download', method: 'get', func: this.downloadPlaylist },
 			{ path: '/:id', method: 'get', func: this.getPlaylist },
 			{ path: '/', method: 'post', func: this.createPlaylist },
 			{ path: '/', method: 'patch', func: this.updatePlaylist },
@@ -35,6 +38,60 @@ export class PlaylistController extends BaseController implements IPlaylistContr
 	async getPlaylists(req: Request, res: Response): Promise<void> {
 		const result = await this.playlistService.index();
 		this.ok(res, result);
+	}
+
+	async downloadPlaylist(req: Request, res: Response, next: NextFunction): Promise<void> {
+		const id = req.query.id;
+
+		if (!id) {
+			return next(new HTTPError(400, 'Не верный запрос'));
+		}
+
+		const result = await this.playlistService.get(id as string);
+
+		const trackLinks = (result?.tracks || [])
+			.map((track: any) => track.link)
+			.map((item: any) => {
+				const parsedLink = item.split('/') || [];
+				const fileName = parsedLink[parsedLink.length - 1] || '';
+
+				return path.resolve('files', fileName);
+			});
+
+		const outputFile = 'files_local/playlist.mp3';
+
+		let command = fluentFfmpeg();
+
+		trackLinks.forEach(function (link: string) {
+			const parsedLink = link.split('/') || [];
+			const fileName = parsedLink[parsedLink.length - 1] || '';
+
+			const filePath = path.resolve('files', fileName);
+
+			command = command.input(filePath);
+		});
+
+		await command
+			.complexFilter({
+				filter: 'amix',
+				options: {
+					inputs: trackLinks.length,
+					duration: 'longest',
+				},
+			})
+			.output(outputFile)
+			.on('end', () => {
+				res.download(path.resolve(outputFile), (err) => {
+					if (err) {
+						console.error('Ошибка при отправке файла:', err);
+						res.status(500).send('Ошибка при отправке файла');
+					}
+				});
+			})
+			.on('error', (err) => {
+				console.error('Ошибка при склейке:', err);
+			})
+			.run();
 	}
 
 	async getPlaylist(req: Request, res: Response, next: NextFunction): Promise<void> {

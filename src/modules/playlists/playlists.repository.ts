@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import type { PlaylistModel } from '../../generated/prisma/client.js';
+import type { PlaylistModel, TrackModel } from '../../generated/prisma/client.js';
 import type { PrismaService } from '../../database/prisma.service.js';
 import { TYPES } from '../../types/types.js';
 import type { PlaylistEntity } from './playlist.entity.js';
@@ -14,6 +14,9 @@ export class PlaylistRepository implements IPlaylistRepository {
 			include: {
 				tracks: true,
 				folder: true,
+			},
+			orderBy: {
+				title: 'asc',
 			},
 		});
 	}
@@ -49,7 +52,9 @@ export class PlaylistRepository implements IPlaylistRepository {
 		});
 	}
 
-	async get(id: string): Promise<Omit<PlaylistModel, 'folderId'> | null> {
+	async get(
+		id: string,
+	): Promise<Omit<PlaylistModel & { tracks: TrackModel[] }, 'folderId'> | null> {
 		return this.prismaService.client.playlistModel.findFirst({
 			where: { id },
 			include: {

@@ -21,10 +21,13 @@ export class FolderRepository implements IFolderRepository {
 				omit: {
 					userId: true,
 				},
+				orderBy: {
+					title: 'asc',
+				},
 			};
 		}
 		// TODO: Переделать
-		return this.prismaService.client.folderModel.findMany(params);
+		return this.prismaService.client.folderModel.findMany({ ...params, orderBy: { title: 'asc' } });
 	}
 
 	async create({ title, name, isPublic, isGlobal, userId }: FolderEntity): Promise<FolderModel> {

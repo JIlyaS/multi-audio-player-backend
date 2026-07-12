@@ -11,6 +11,7 @@ import { ValidateMiddleware } from '../../common/validate.middleware.js';
 import { AuthGuard } from '../../common/auth.guard.js';
 import { HTTPError } from '../../errors/httpError.class.js';
 import type { UpdateTrackDto } from './dto/update-track.dto.js';
+import path from 'node:path';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type RequestBody<T> = Request<{}, {}, T>;
@@ -26,6 +27,7 @@ export class TrackController extends BaseController implements ITrackController 
 			// middlewares: [new ValidateMiddleware(dto)]
 			{ path: '/', method: 'get', func: this.getTracks },
 			{ path: '/load', method: 'get', func: this.loadTracks },
+			{ path: '/download', method: 'get', func: this.downloadTrack },
 			{ path: '/', method: 'patch', func: this.updateTrack },
 			// TODO: experimental
 			{ path: '', method: 'patch', func: this.updateFolderForTracks },
@@ -54,6 +56,32 @@ export class TrackController extends BaseController implements ITrackController 
 
 	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 	async updateFolderForTracks() {}
+
+	async downloadTrack(req: Request, res: Response, next: NextFunction): Promise<void> {
+		const id = req.query.id;
+
+		if (!id) {
+			return next(new HTTPError(400, 'Не верный запрос'));
+		}
+
+		const result = await this.trackService.get(id as string);
+
+		const parsedLink = result?.link.split('/') || [];
+		const fileName = parsedLink[parsedLink.length - 1] || '';
+
+		const filePath = path.resolve('files', fileName);
+
+		if (!filePath.startsWith(filePath)) {
+			res.status(400).send('Ошибка: доступ к файлу запрещён');
+		}
+
+		res.download(filePath, (err) => {
+			if (err) {
+				console.error('Ошибка при отправке файла:', err);
+				res.status(500).send('Ошибка при отправке файла');
+			}
+		});
+	}
 
 	// TODO: Трек удаляется из базы, но не удаляется из файлово системы, при запросе GET /load удалённый трек снова попадет в БД
 	async deleteTrack(req: Request, res: Response, next: NextFunction): Promise<void> {

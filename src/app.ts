@@ -55,6 +55,7 @@ export class App {
 		this.app.use(cors());
 
 		this.app.use('/static', express.static('files'));
+		this.app.use('/static_local', express.static('files_local'));
 
 		const authMiddleware = new AuthMiddleware(String(this.configService.get('SECRET')));
 		this.app.use(authMiddleware.execute.bind(authMiddleware));

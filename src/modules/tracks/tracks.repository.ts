@@ -13,6 +13,9 @@ export class TracksRepository implements ITrackRepository {
 			include: {
 				folder: true,
 			},
+			orderBy: {
+				title: 'asc',
+			},
 		});
 	}
 	async create({ title, link, author, type, tags, folderId }: TrackEntity): Promise<TrackModel> {
@@ -28,6 +31,7 @@ export class TracksRepository implements ITrackRepository {
 		});
 	}
 
+	// TODO: Обновление треков исправить
 	async update(id: string, { folderId }: { folderId: string | null }): Promise<TrackModel> {
 		return this.prismaService.client.trackModel.update({
 			where: { id },

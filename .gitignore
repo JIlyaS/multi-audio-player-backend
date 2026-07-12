@@ -68,3 +68,6 @@ dist
 
 # Серверная настройка экосистемы pm2
 ecosystem.config.js
+
+files
+files_local
